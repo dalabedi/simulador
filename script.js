@@ -1,3 +1,9 @@
+// Formatador de moeda brasileiro
+const formatadorBR = new Intl.NumberFormat('pt-BR', {
+  style: 'currency',
+  currency: 'BRL'
+});
+
 function formatarInput(input) {
   let valor = input.value.replace(/\D/g, '');
   if (valor === '') {
@@ -73,7 +79,7 @@ function calcular() {
   }
 
   let html = `
-    <p><strong>Valor financiado:</strong> R$ ${financiamento.toFixed(2).replace('.', ',')}</p>
+    <p><strong>Valor financiado:</strong> ${formatadorBR.format(financiamento)}</p>
     <table>
       <tr>
         <th>Parcela</th>
@@ -87,10 +93,10 @@ function calcular() {
     html += `
       <tr>
         <td>${p.parcela}</td>
-        <td>R$ ${p.amortizacao.toFixed(2).replace('.', ',')}</td>
-        <td>R$ ${p.juros.toFixed(2).replace('.', ',')}</td>
-        <td>R$ ${p.total.toFixed(2).replace('.', ',')}</td>
-        <td>R$ ${p.saldo.toFixed(2).replace('.', ',')}</td>
+        <td>${formatadorBR.format(p.amortizacao)}</td>
+        <td>${formatadorBR.format(p.juros)}</td>
+        <td>${formatadorBR.format(p.total)}</td>
+        <td>${formatadorBR.format(p.saldo)}</td>
       </tr>`;
   });
 
