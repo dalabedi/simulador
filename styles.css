@@ -25,7 +25,7 @@ label {
   font-weight: bold;
 }
 
-input, select {
+input {
   width: 100%;
   padding: 12px;
   margin-top: 5px;
@@ -96,10 +96,6 @@ th {
     width: 100%;
     margin-right: 0;
     margin-bottom: 10px;
-  }
-
-  button.limpar {
-    margin-bottom: 0;
   }
 
   table, th, td {
