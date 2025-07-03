@@ -1,4 +1,3 @@
-// Formatador de moeda brasileiro
 const formatadorBR = new Intl.NumberFormat('pt-BR', {
   style: 'currency',
   currency: 'BRL'
@@ -21,7 +20,6 @@ function limparCampos() {
   document.getElementById("entrada").value = "";
   document.getElementById("juros").value = "";
   document.getElementById("prazo").value = "";
-  document.getElementById("tipo").value = "price";
   document.getElementById("resultado").innerHTML = "";
 }
 
@@ -30,7 +28,6 @@ function calcular() {
   const entrada = parseFloat(document.getElementById("entrada").value.replace(/\./g, '').replace(',', '.'));
   const jurosAnual = parseFloat(document.getElementById("juros").value);
   const prazo = parseInt(document.getElementById("prazo").value);
-  const tipo = document.getElementById("tipo").value;
 
   if (isNaN(valor) || isNaN(entrada) || isNaN(jurosAnual) || isNaN(prazo)) {
     alert("Por favor, preencha todos os campos corretamente.");
@@ -44,62 +41,64 @@ function calcular() {
 
   const financiamento = valor - entrada;
   const jurosMensal = jurosAnual / 100 / 12;
-  let parcelas = [];
 
-  if (tipo === "price") {
-    const p = financiamento * (jurosMensal / (1 - Math.pow(1 + jurosMensal, -prazo)));
-    let saldo = financiamento;
-    for (let i = 1; i <= prazo; i++) {
-      const juros = saldo * jurosMensal;
-      const amortizacao = p - juros;
-      saldo -= amortizacao;
-      parcelas.push({
-        parcela: i,
-        amortizacao,
-        juros,
-        total: p,
-        saldo: saldo > 0 ? saldo : 0
-      });
-    }
-  } else if (tipo === "sac") {
-    const amortizacao = financiamento / prazo;
-    let saldo = financiamento;
-    for (let i = 1; i <= prazo; i++) {
-      const juros = saldo * jurosMensal;
-      const total = amortizacao + juros;
-      saldo -= amortizacao;
-      parcelas.push({
-        parcela: i,
-        amortizacao,
-        juros,
-        total,
-        saldo: saldo > 0 ? saldo : 0
-      });
-    }
+  const resultados = { price: [], sac: [] };
+
+  // PRICE
+  const p = financiamento * (jurosMensal / (1 - Math.pow(1 + jurosMensal, -prazo)));
+  let saldoPrice = financiamento;
+  for (let i = 1; i <= prazo; i++) {
+    const juros = saldoPrice * jurosMensal;
+    const amortizacao = p - juros;
+    saldoPrice -= amortizacao;
+    resultados.price.push({ parcela: i, amortizacao, juros, total: p, saldo: saldoPrice > 0 ? saldoPrice : 0 });
   }
 
-  let html = `
+  // SAC
+  const amortizacao = financiamento / prazo;
+  let saldoSac = financiamento;
+  for (let i = 1; i <= prazo; i++) {
+    const juros = saldoSac * jurosMensal;
+    const total = amortizacao + juros;
+    saldoSac -= amortizacao;
+    resultados.sac.push({ parcela: i, amortizacao, juros, total, saldo: saldoSac > 0 ? saldoSac : 0 });
+  }
+
+  let html = "";
+
+  // PRICE
+  html += `<div class="resultado-bloco">
+    <h2>📊 Sistema PRICE</h2>
     <p><strong>Valor financiado:</strong> ${formatadorBR.format(financiamento)}</p>
-    <table>
-      <tr>
-        <th>Parcela</th>
-        <th>Amortização</th>
-        <th>Juros</th>
-        <th>Total</th>
-        <th>Saldo</th>
-      </tr>`;
-
-  parcelas.forEach(p => {
-    html += `
-      <tr>
-        <td>${p.parcela}</td>
-        <td>${formatadorBR.format(p.amortizacao)}</td>
-        <td>${formatadorBR.format(p.juros)}</td>
-        <td>${formatadorBR.format(p.total)}</td>
-        <td>${formatadorBR.format(p.saldo)}</td>
-      </tr>`;
+    <div class="tabela-scroll"><table>
+      <tr><th>Parcela</th><th>Amortização</th><th>Juros</th><th>Total</th><th>Saldo</th></tr>`;
+  resultados.price.forEach(p => {
+    html += `<tr>
+      <td>${p.parcela}</td>
+      <td>${formatadorBR.format(p.amortizacao)}</td>
+      <td>${formatadorBR.format(p.juros)}</td>
+      <td>${formatadorBR.format(p.total)}</td>
+      <td>${formatadorBR.format(p.saldo)}</td>
+    </tr>`;
   });
+  html += `</table></div></div>`;
 
-  html += `</table>`;
+  // SAC
+  html += `<div class="resultado-bloco">
+    <h2>📊 Sistema SAC</h2>
+    <p><strong>Valor financiado:</strong> ${formatadorBR.format(financiamento)}</p>
+    <div class="tabela-scroll"><table>
+      <tr><th>Parcela</th><th>Amortização</th><th>Juros</th><th>Total</th><th>Saldo</th></tr>`;
+  resultados.sac.forEach(p => {
+    html += `<tr>
+      <td>${p.parcela}</td>
+      <td>${formatadorBR.format(p.amortizacao)}</td>
+      <td>${formatadorBR.format(p.juros)}</td>
+      <td>${formatadorBR.format(p.total)}</td>
+      <td>${formatadorBR.format(p.saldo)}</td>
+    </tr>`;
+  });
+  html += `</table></div></div>`;
+
   document.getElementById("resultado").innerHTML = html;
 }
