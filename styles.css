@@ -62,13 +62,19 @@ button.limpar {
   background-color: #e8f5e9;
   padding: 15px;
   border-radius: 8px;
+}
+
+.tabela-scroll {
   overflow-x: auto;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 15px;
+  min-width: 600px;
 }
 
 th, td {
