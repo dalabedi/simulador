@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>Simulador de Financiamento Habitacional</h1>
+  <h1>🏠 Simulador de Financiamento Habitacional</h1>
   <div class="container">
     <label for="valor">Valor do imóvel:</label>
     <input type="text" id="valor" oninput="formatarInput(this)" placeholder="Ex: 300.000,00" />
@@ -22,16 +22,18 @@
     <input type="number" id="prazo" placeholder="Ex: 240" />
 
     <label for="tipo">Tipo de financiamento:</label>
-  
+    <select id="tipo">
+      <option value="ambos">Exibir ambos</option>
       <option value="price">Tabela Price</option>
       <option value="sac">SAC (Amortização Constante)</option>
     </select>
 
-    <button onclick="calcular()">Calcular</button>
-    <button class="limpar" onclick="limparCampos()">Limpar</button>
+    <button type="button" onclick="calcular()">Calcular</button>
+    <button type="button" class="limpar" onclick="limparCampos()">Limpar</button>
 
     <div id="resultado"></div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
